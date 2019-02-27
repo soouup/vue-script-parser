@@ -18,7 +18,18 @@
 </template>
 
 <script>
+/* TITLE:aaaaaaa */
+/* TITLE:bbbbbbb */
+
+// apiapiapi
+// apiapiapi
+
+// apiapiapi
+/* aaaa
+ssssss
+bbbbbb */
 import * as api2 from 'api'
+// api8api8api8
 import {
   BASE_URL,
   api8
@@ -27,51 +38,36 @@ import api from '../../api/'
 const api3 = require('api3')
 export default {
   name: 'SeaFileUploader',
+  props: ['title', 'likes', 'isPublished', 'commentIds', 'author'],
   props: {
-    value: {
+    // 基础的类型检查 (`null` 和 `undefined` 会通过任何类型验证)
+    propA: Number,
+    // 多个可能的类型
+    propB: [String, Number],
+    // 必填的字符串
+    propC: {
       type: String,
-      // required: true
+      required: true
     },
-    url: {
-      type: String,
-      default: api.common.fileUploadApi
+    // 带有默认值的数字
+    propD: {
+      type: Number,
+      default: 100
     },
-    width: {
-      type: String,
-      default: '500px'
-    },
-    // 例：['image/jpeg', 'image/gif', 'image/png']
-    validType: {
-      type: Array,
-    },
-    // 单位MB
-    maxSize: {
-      type: [Number, String],
-    },
-    // rulesOfWH格式:{minWidth,minHeight,maxWidth,maxHeight}
-    rulesOfWH: {
+    // 带有默认值的对象
+    propE: {
       type: Object,
+      // 对象或数组默认值必须从一个工厂函数获取
+      default: function () {
+        return { message: 'hello' }
+      }
     },
-
-    isDisabled: {
-      type: Boolean,
-      default: false
-    },
-
-    // 是否多文件
-    multifile: {
-      type: Boolean
-    },
-
-    // 多文件时，最大数量（不传则不限制）
-    limit: {
-      type: [Number, String],
-      default: null
-    },
-
-    listType: {
-      type: String,
-      default: 'picture',
+    // 自定义验证函数
+    propF: {
+      validator: function (value) {
+        // 这个值必须匹配下列字符串中的一个
+        return ['success', 'warning', 'danger'].indexOf(value) !== -1
+      }
     }
   },
   data() {

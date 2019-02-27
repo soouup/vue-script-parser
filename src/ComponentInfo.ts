@@ -1,4 +1,4 @@
-type VueApis = Dependence | Component | Data | Prop | Method | Watch | Computed
+type VueOption = Dependence | Component | Data | Prop | Method | Watch | Computed
 type LifeCycleName = 'beforeCreate' | 'created' | 'beforeMount' | 'mounted' | 'beforeUpdate' | 'updated' | 'beforeDetroy' | 'activated' | 'deactivated'
 export interface ImportSpecifer {
   name: string
@@ -26,20 +26,20 @@ export interface Prop {
 }
 export interface Watch {
   name: string
-  use: Array<VueApis>
+  use: Array<VueOption>
 }
 export interface Computed {
   name: string
-  use: Array<VueApis>
+  use: Array<VueOption>
 }
 export interface Method {
   name: string
   comment: string
-  use: Array<VueApis>
+  use: Array<VueOption>
 }
 export interface LifeCycle {
   name: LifeCycleName
-  use: Array<VueApis>
+  use: Array<VueOption>
 }
 
 export default interface ComponentInfo {

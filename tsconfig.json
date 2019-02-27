@@ -2,14 +2,16 @@
   "compilerOptions": {
     "target": "esnext",
     "module": "commonjs",
+    "rootDir": "./src",
+    "outDir": "./lib",
+    "sourceMap": false,
+    // "declaration": true,
+    // "declarationDir": "./types",
     "noImplicitAny": true,
     "removeComments": true,
     "preserveConstEnums": true,
-    "rootDir":"./src",
-    "outDir": "./lib",
-    "sourceMap": false,
-    "declaration": true,
-    "declarationDir": "./types"
+    "strictNullChecks": true,
+    "moduleResolution": "node"
   },
   "include": [
     "src/**/*"
