@@ -23,7 +23,7 @@ import ComponentInfo, { Dependence, ImportSpecifer } from './ComponentInfo'
   }, [])
   const comment = getConcatedComments(mainCommentArr)
   const dependencies: Array<Dependence> = []
-  let name = ''
+  let name
   traverse(ast, {
     // 读取import依赖
     ImportDeclaration(path: NodePath<t.ImportDeclaration>) {
@@ -49,8 +49,31 @@ import ComponentInfo, { Dependence, ImportSpecifer } from './ComponentInfo'
     ExportDefaultDeclaration(rootPath: NodePath<t.ExportDefaultDeclaration>) {
       const declaration = rootPath.node.declaration as t.ObjectExpression
       const properties = declaration.properties
-      const nameOption = properties.find(node => t.isObjectProperty(node) && node.key.name === 'name') as t.ObjectProperty
-      name = (nameOption.value as t.StringLiteral).value
+
+      type VueOptionNameSetAsMethod = 'data'
+      type VueOptionNameSetAsProperty = 'name' | 'props' | 'computed' | 'watch' | 'methods'
+      type VueOptionName = VueOptionNameSetAsMethod | VueOptionNameSetAsProperty
+      function isVueOptionNameSetAsMethod(opName: string): opName is VueOptionNameSetAsMethod {
+        return ['data'].includes(opName)
+      }
+      function isVueOptionNameSetAsProperty(opName: string): opName is VueOptionNameSetAsProperty {
+        return ['name', 'props', 'computed', 'watch', 'methods'].includes(opName)
+      }
+
+      const nodeOfVueOptions = new Map<VueOptionName, Node>()
+
+      properties.forEach(pNode => {
+        if (t.isObjectProperty(pNode) && isVueOptionNameSetAsProperty(pNode.key.name)) {
+          nodeOfVueOptions.set(pNode.key.name, pNode)
+        } else if (t.isObjectMethod(pNode) && isVueOptionNameSetAsMethod(pNode.key.name)) {
+          nodeOfVueOptions.set(pNode.key.name, pNode)
+        }
+      })
+
+      const nameNode = nodeOfVueOptions.get('name')
+      name = nameNode ? ((nameNode as t.ObjectProperty).value as t.StringLiteral).value : null
+
+      const props = nodeOfVueOptions.get('props')
     }
   })
   const ci: ComponentInfo = {

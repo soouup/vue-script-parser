@@ -20,6 +20,7 @@ export interface Data {
 }
 export interface Prop {
   name: string
+  required: boolean
   default?: any
   type?: string | string[] | null
   comment: string
@@ -43,8 +44,8 @@ export interface LifeCycle {
 }
 
 export default interface ComponentInfo {
-  comment: string
-  name: string
+  comment?: string
+  name?: string
   dependencies?: Array<Dependence>
   components?: Array<Component>
   data?: Array<Data>
