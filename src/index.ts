@@ -6,7 +6,18 @@ import * as t from '@babel/types'
 
 import scriptToAST from './scriptToAST'
 import { getConcatedComments } from './utils'
-import ComponentInfo, { Dependence, ImportSpecifer } from './ComponentInfo'
+import ComponentInfo, {
+  VueOptionNameSetAsMethod,
+  VueOptionNameSetAsProperty,
+  VueOptionName,
+  ImportSpecifer,
+
+  Dependence,
+  Prop,
+} from './ComponentTypes'
+
+import nameReader from './reader/nameReader'
+import propsReader from './reader/propsReader'
 
 (function (file: string) {
   const code = fs.readFileSync(file, 'utf-8')
@@ -24,6 +35,7 @@ import ComponentInfo, { Dependence, ImportSpecifer } from './ComponentInfo'
   const comment = getConcatedComments(mainCommentArr)
   const dependencies: Array<Dependence> = []
   let name
+  let props: Array<Prop> = []
   traverse(ast, {
     // 读取import依赖
     ImportDeclaration(path: NodePath<t.ImportDeclaration>) {
@@ -50,9 +62,6 @@ import ComponentInfo, { Dependence, ImportSpecifer } from './ComponentInfo'
       const declaration = rootPath.node.declaration as t.ObjectExpression
       const properties = declaration.properties
 
-      type VueOptionNameSetAsMethod = 'data'
-      type VueOptionNameSetAsProperty = 'name' | 'props' | 'computed' | 'watch' | 'methods'
-      type VueOptionName = VueOptionNameSetAsMethod | VueOptionNameSetAsProperty
       function isVueOptionNameSetAsMethod(opName: string): opName is VueOptionNameSetAsMethod {
         return ['data'].includes(opName)
       }
@@ -70,10 +79,9 @@ import ComponentInfo, { Dependence, ImportSpecifer } from './ComponentInfo'
         }
       })
 
-      const nameNode = nodeOfVueOptions.get('name')
-      name = nameNode ? ((nameNode as t.ObjectProperty).value as t.StringLiteral).value : null
+      name = nameReader(nodeOfVueOptions)
+      props = propsReader(nodeOfVueOptions)
 
-      const props = nodeOfVueOptions.get('props')
     }
   })
   const ci: ComponentInfo = {

@@ -1,5 +1,23 @@
-type VueOption = Dependence | Component | Data | Prop | Method | Watch | Computed
-type LifeCycleName = 'beforeCreate' | 'created' | 'beforeMount' | 'mounted' | 'beforeUpdate' | 'updated' | 'beforeDetroy' | 'activated' | 'deactivated'
+export type VueOption = Dependence | Component | Data | Prop | Method | Watch | Computed
+
+export type LifeCycleName = 'beforeCreate' | 'created' | 'beforeMount' | 'mounted' | 'beforeUpdate'
+  | 'updated' | 'beforeDetroy' | 'activated' | 'deactivated'
+export type VueOptionNameSetAsMethod = 'data' | LifeCycleName
+export type VueOptionNameSetAsProperty = 'name' | 'props' | 'computed' | 'watch' | 'methods'
+export type VueOptionName = VueOptionNameSetAsMethod | VueOptionNameSetAsProperty
+
+/* 
+store the descriptions of import specifiers
+
+like:import * as xxx from xxx
+type:"ImportNamespaceSpecifier" 
+
+like:import { xxx } from xxx
+"ImportSpecifier"
+
+like:import xxx from xxx
+"ImportDefaultSpecifier"
+*/
 export interface ImportSpecifer {
   name: string
   type: string
@@ -20,10 +38,10 @@ export interface Data {
 }
 export interface Prop {
   name: string
-  required: boolean
+  required?: boolean
   default?: any
   type?: string | string[] | null
-  comment: string
+  comment?: string
 }
 export interface Watch {
   name: string
