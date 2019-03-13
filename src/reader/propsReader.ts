@@ -25,26 +25,31 @@ export default function (nodeOfVueOptions: Map<VueOptionName, Node>) {
         if (t.isObjectProperty(p)) {
           // like propA: Number || propA: [Number,String]
           if (t.isIdentifier(p.value) || t.isArrayExpression(p.value)) {
-            return {
+            const prop: Prop = {
               name: p.key.name as string,
               type: generate(p.value).code,
               comment: getConcatedComments(p.leadingComments || [])
             }
+            return prop
             // like propA:{}
           } else if (t.isObjectExpression(p.value)) {
 
-            const typeNode = p.value.properties.find((pp) => (pp as t.ObjectProperty).key.name === 'type') as t.ObjectProperty
+            const typeNode = p.value.properties
+              .find((pp) => (pp as t.ObjectProperty).key.name === 'type') as t.ObjectProperty
             const type = typeNode ? generate(typeNode.value).code : ''
 
-            const requiredNode = p.value.properties.find((pp) => (pp as t.ObjectProperty).key.name === 'required') as t.ObjectProperty
-            return {
+            const requiredNode = p.value.properties
+              .find((pp) => (pp as t.ObjectProperty).key.name === 'required') as t.ObjectProperty
+
+            const prop:Prop = {
               name: p.key.name as string,
               required: false,
               type,
               default: '',
-              validator: false,
+              validator: '',
               comment: getConcatedComments(p.leadingComments || []),
             }
+            return prop
           } else {
             console.warn('some props value is invalid')
             return null
@@ -53,7 +58,7 @@ export default function (nodeOfVueOptions: Map<VueOptionName, Node>) {
           console.warn('some props do not set as object property')
           return null
         }
-      }).filter((v: { name: string } | null): v is { name: string } => !!v)
+      }).filter((v: Prop | null): v is Prop => !!v)
     }
   }
   return []
