@@ -51,8 +51,13 @@ export default {
     },
     // 带有默认值的数字
     propD: {
-      type: Number,
-      default: 100
+      type: [Number,String],
+      required: true,
+      default: 100,
+      validator: function (value) {
+        // 这个值必须匹配下列字符串中的一个
+        return ['success', 'warning', 'danger'].indexOf(value) !== -1
+      }
     },
     // 带有默认值的对象
     propE: {

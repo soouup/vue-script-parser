@@ -40,7 +40,8 @@ export interface Prop {
   name: string
   required?: boolean
   default?: any
-  type?: string | string[] | null
+  validator?: string
+  type?: string
   comment?: string
 }
 export interface Watch {
