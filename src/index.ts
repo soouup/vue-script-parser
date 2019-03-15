@@ -5,7 +5,7 @@ import traverse, { NodePath, Node } from '@babel/traverse'
 import * as t from '@babel/types'
 
 import scriptToAST from './scriptToAST'
-import { getConcatedComments } from './utils'
+import getConcatedComments from './helpers/getConcatedComments'
 import ComponentInfo, {
   VueOptionNameSetAsMethod,
   VueOptionNameSetAsProperty,

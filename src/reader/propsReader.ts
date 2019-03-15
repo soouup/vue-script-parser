@@ -3,7 +3,8 @@ import * as t from '@babel/types'
 import generate from '@babel/generator'
 
 import { VueOptionName, Prop } from '../ComponentTypes'
-import { getConcatedComments } from '../utils'
+import getConcatedComments from '../helpers/getConcatedComments'
+import processFunctionProperty from '../helpers/processFunctionProperty'
 
 export default function (nodeOfVueOptions: Map<VueOptionName, Node>) {
   const node = nodeOfVueOptions.get('props') as t.ObjectProperty | undefined
@@ -33,7 +34,20 @@ export default function (nodeOfVueOptions: Map<VueOptionName, Node>) {
             return prop
             // like propA:{}
           } else if (t.isObjectExpression(p.value)) {
+            let _prop: Prop = {
+              name: p.key.name as string,
+            }
+            p.value.properties.forEach(pp => {
+              if (t.isObjectProperty(pp) && pp.key.name === 'type') {
+                _prop.type = generate(pp.value).code
+              if(t.isObjectProperty(pp) && pp.key.name === 'required'){
+                  processFunctionProperty()
+                }
+              }
+              if (t.isObjectProperty(pp)){
 
+              }
+            })
             const typeNode = p.value.properties
               .find((pp) => (pp as t.ObjectProperty).key.name === 'type') as t.ObjectProperty
             const type = typeNode ? generate(typeNode.value).code : ''
@@ -41,7 +55,7 @@ export default function (nodeOfVueOptions: Map<VueOptionName, Node>) {
             const requiredNode = p.value.properties
               .find((pp) => (pp as t.ObjectProperty).key.name === 'required') as t.ObjectProperty
 
-            const prop:Prop = {
+            const prop: Prop = {
               name: p.key.name as string,
               required: false,
               type,

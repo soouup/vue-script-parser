@@ -54,7 +54,7 @@ export default {
       type: [Number,String],
       required: true,
       default: 100,
-      validator: function (value) {
+      validator(value) {
         // 这个值必须匹配下列字符串中的一个
         return ['success', 'warning', 'danger'].indexOf(value) !== -1
       }

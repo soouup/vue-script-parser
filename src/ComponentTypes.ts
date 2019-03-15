@@ -22,6 +22,14 @@ export interface ImportSpecifer {
   name: string
   type: string
 }
+/* 
+store the definition of function
+*/
+export interface FunctionDescription {
+  code: string
+  use: Array<string>
+}
+
 export interface Dependence {
   source: string
   comment: string
@@ -39,8 +47,8 @@ export interface Data {
 export interface Prop {
   name: string
   required?: boolean
-  default?: any
-  validator?: string
+  default?: number | string | boolean | null | undefined | FunctionDescription
+  validator?: FunctionDescription
   type?: string
   comment?: string
 }
