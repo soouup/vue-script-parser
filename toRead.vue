@@ -54,6 +54,12 @@ export default {
       type: [Number,String],
       required: true,
       default: 100,
+      default:null,
+      default:undefined,
+      default:Symbal(),
+      default(){return 1},
+      default: ()=>{},
+      default: function(){return {}},
       validator(value) {
         // 这个值必须匹配下列字符串中的一个
         return ['success', 'warning', 'danger'].indexOf(value) !== -1
@@ -63,9 +69,7 @@ export default {
     propE: {
       type: Object,
       // 对象或数组默认值必须从一个工厂函数获取
-      default: function () {
-        return { message: 'hello' }
-      }
+      default: '1'
     },
     // 自定义验证函数
     propF: {

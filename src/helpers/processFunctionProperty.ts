@@ -1,5 +1,5 @@
 import * as t from '@babel/types'
-import generator from '@babel/generator'
+import generate from '@babel/generator'
 import { FunctionDescription } from '../ComponentTypes'
 /**
 处理ObjectProperty和ObjectMethod注册的函数
@@ -7,7 +7,7 @@ import { FunctionDescription } from '../ComponentTypes'
 // TODO use
 export default function processFunctionProperty(funcNode: t.ObjectProperty | t.ObjectMethod): FunctionDescription {
   if (t.isObjectProperty(funcNode)) {
-    if (!t.isFunctionExpression(funcNode)) {
+    if (!t.isFunctionExpression(funcNode.value) && !t.isArrowFunctionExpression(funcNode.value)) {
       console.warn('not a function expression node')
       return {
         code: '',
@@ -15,12 +15,12 @@ export default function processFunctionProperty(funcNode: t.ObjectProperty | t.O
       }
     }
     return {
-      code: generator(funcNode.value).code,
+      code: generate(funcNode.value).code,
       use: []
     }
   } else {
     return {
-      code: generator(funcNode).code,
+      code: generate(funcNode).code,
       use: []
     }
   }

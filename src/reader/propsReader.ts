@@ -34,35 +34,40 @@ export default function (nodeOfVueOptions: Map<VueOptionName, Node>) {
             return prop
             // like propA:{}
           } else if (t.isObjectExpression(p.value)) {
-            let _prop: Prop = {
+            let prop: Prop = {
               name: p.key.name as string,
             }
             p.value.properties.forEach(pp => {
               if (t.isObjectProperty(pp) && pp.key.name === 'type') {
-                _prop.type = generate(pp.value).code
-              if(t.isObjectProperty(pp) && pp.key.name === 'required'){
-                  processFunctionProperty()
+                prop.type = generate(pp.value).code
+              }
+              if (t.isObjectProperty(pp) && pp.key.name === 'required') {
+                prop.required = (pp.value as t.BooleanLiteral).value
+              }
+              // like propA:{default: 1} or {default:()=>{}} or {default:function(){return {}}}
+              if (t.isObjectProperty(pp) && pp.key.name === 'default') {
+                // not fn
+                if (t.isNumericLiteral(pp.value) || t.isStringLiteral(pp.value) || t.isBooleanLiteral(pp.value)) {
+                  prop.default = pp.value.value
+                } else if (t.isNullLiteral(pp.value)) {
+                  prop.default = null
+                } else if (t.isIdentifier(pp.value) && pp.value.name === 'undefined') {
+                  prop.default = undefined
+                } else if (t.isFunctionExpression(pp.value) || t.isArrowFunctionExpression(pp.value)) {
+                  prop.default = processFunctionProperty(pp)
+                } else {
+                  console.warn('default not set as any of number,string,boolean,null,undefined,generator function')
+                  prop.default = 'invalid'
                 }
               }
-              if (t.isObjectProperty(pp)){
-
+              // like propA:{default(){return {}}}
+              if (t.isObjectMethod(pp) && pp.key.name === 'default') {
+                prop.default = processFunctionProperty(pp)
+              }
+              if ((t.isObjectProperty(pp) || t.isObjectMethod(pp)) && pp.key.name === 'validator') {
+                prop.validator = processFunctionProperty(pp)
               }
             })
-            const typeNode = p.value.properties
-              .find((pp) => (pp as t.ObjectProperty).key.name === 'type') as t.ObjectProperty
-            const type = typeNode ? generate(typeNode.value).code : ''
-
-            const requiredNode = p.value.properties
-              .find((pp) => (pp as t.ObjectProperty).key.name === 'required') as t.ObjectProperty
-
-            const prop: Prop = {
-              name: p.key.name as string,
-              required: false,
-              type,
-              default: '',
-              validator: '',
-              comment: getConcatedComments(p.leadingComments || []),
-            }
             return prop
           } else {
             console.warn('some props value is invalid')
