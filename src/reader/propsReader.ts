@@ -36,6 +36,7 @@ export default function (nodeOfVueOptions: Map<VueOptionName, Node>) {
           } else if (t.isObjectExpression(p.value)) {
             let prop: Prop = {
               name: p.key.name as string,
+              comment: getConcatedComments(p.leadingComments || [])
             }
             p.value.properties.forEach(pp => {
               if (t.isObjectProperty(pp) && pp.key.name === 'type') {
@@ -57,7 +58,6 @@ export default function (nodeOfVueOptions: Map<VueOptionName, Node>) {
                   prop.default = processFunctionProperty(pp)
                 } else {
                   console.warn('default not set as any of number,string,boolean,null,undefined,generator function')
-                  prop.default = 'invalid'
                 }
               }
               // like propA:{default(){return {}}}
