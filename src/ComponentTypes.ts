@@ -27,13 +27,13 @@ store the definition of function
 */
 export interface FunctionDescription {
   code: string
-  use: Array<string>
+  use: string[]
 }
 
 export interface Dependence {
   source: string
   comment: string
-  specifiers: Array<ImportSpecifer>
+  specifiers: ImportSpecifer[]
 }
 export interface Component {
   name: string
@@ -54,31 +54,31 @@ export interface Prop {
 }
 export interface Watch {
   name: string
-  use: Array<VueOption>
+  use: VueOption[]
 }
 export interface Computed {
   name: string
-  use: Array<VueOption>
+  use: VueOption[]
 }
 export interface Method {
   name: string
   comment: string
-  use: Array<VueOption>
+  use: VueOption[]
 }
 export interface LifeCycle {
   name: LifeCycleName
-  use: Array<VueOption>
+  use: VueOption[]
 }
 
 export default interface ComponentInfo {
   comment?: string
   name?: string
-  dependencies?: Array<Dependence>
-  components?: Array<Component>
-  data?: Array<Data>
-  props?: Array<Prop>
-  methods?: Array<Method>
-  watches?: Array<Watch>
-  computeds?: Array<Computed>
-  lifeCycles?: Array<LifeCycle>
+  dependencies?: Dependence[]
+  components?: Component[]
+  data?: Data[]
+  props?: Prop[]
+  methods?: Method[]
+  watches?: Watch[]
+  computeds?: Computed[]
+  lifeCycles?: LifeCycle[]
 }

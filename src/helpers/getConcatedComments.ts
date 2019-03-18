@@ -5,7 +5,7 @@ import * as t from '@babel/types'
 */
 export default function getConcatedComments(comments: ReadonlyArray<t.Comment>): string {
   return comments
-    .reduce((sofar: Array<string>, comment: t.Comment) => {
+    .reduce((sofar: string[], comment: t.Comment) => {
       return [...sofar, comment.value.trim()]
     }, [])
     .join('\n')

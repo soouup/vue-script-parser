@@ -14,10 +14,12 @@ import ComponentInfo, {
 
   Dependence,
   Prop,
+  Data
 } from './ComponentTypes'
 
-import nameReader from './reader/nameReader'
-import propsReader from './reader/propsReader'
+import nameReader from './readers/nameReader'
+import propsReader from './readers/propsReader'
+import dataReader from './readers/dataReader'
 
 (function (file: string) {
   const code = fs.readFileSync(file, 'utf-8')
@@ -25,7 +27,7 @@ import propsReader from './reader/propsReader'
 
   debugger
   // 最上的连续的commentblock类型的注释作为项目的注释
-  const mainCommentArr: Array<t.Comment> = ast.comments.reduce((sofar: Array<t.Comment>, comment: t.Comment, index: number, arr: Array<t.Comment>) => {
+  const mainCommentArr: t.Comment[] = ast.comments.reduce((sofar: t.Comment[], comment: t.Comment, index: number, arr: t.Comment[]) => {
     if (comment.type === 'CommentBlock' && arr.indexOf(sofar[sofar.length - 1]) + 1 === index) {
       return [...sofar, comment]
     } else {
@@ -33,14 +35,15 @@ import propsReader from './reader/propsReader'
     }
   }, [])
   const comment = getConcatedComments(mainCommentArr)
-  const dependencies: Array<Dependence> = []
+  const dependencies: Dependence[] = []
   let name
-  let props: Array<Prop> = []
+  let props: Prop[] = []
+  let data: Data[] = []
   traverse(ast, {
     // 读取import依赖
     ImportDeclaration(path: NodePath<t.ImportDeclaration>) {
       const source: string = path.node.source.value
-      const specifiers: Array<ImportSpecifer> = path.node.specifiers.map(s => {
+      const specifiers: ImportSpecifer[] = path.node.specifiers.map(s => {
         return {
           type: s.type,
           name: s.local.name
@@ -81,6 +84,7 @@ import propsReader from './reader/propsReader'
 
       name = nameReader(nodeOfVueOptions)
       props = propsReader(nodeOfVueOptions)
+      data = dataReader(nodeOfVueOptions)
 
     }
   })
