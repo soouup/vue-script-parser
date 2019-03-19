@@ -5,7 +5,7 @@ import { FunctionDescription } from '../ComponentTypes'
 处理ObjectProperty和ObjectMethod注册的函数
 */
 // TODO use
-export default function processFunctionProperty(funcNode: t.ObjectProperty | t.ObjectMethod): FunctionDescription {
+export default function processFunctionProperty (funcNode: t.ObjectProperty | t.ObjectMethod): FunctionDescription {
   if (t.isObjectProperty(funcNode)) {
     if (!t.isFunctionExpression(funcNode.value) && !t.isArrowFunctionExpression(funcNode.value)) {
       console.warn('not a function expression node')

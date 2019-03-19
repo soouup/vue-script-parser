@@ -1,16 +1,16 @@
 export type VueOption = Dependence | Component | Data | Prop | Method | Watch | Computed
 
 export type LifeCycleName = 'beforeCreate' | 'created' | 'beforeMount' | 'mounted' | 'beforeUpdate'
-  | 'updated' | 'beforeDetroy' | 'activated' | 'deactivated'
+| 'updated' | 'beforeDetroy' | 'activated' | 'deactivated'
 export type VueOptionNameSetAsMethod = 'data' | LifeCycleName
 export type VueOptionNameSetAsProperty = 'name' | 'props' | 'computed' | 'watch' | 'methods'
 export type VueOptionName = VueOptionNameSetAsMethod | VueOptionNameSetAsProperty
 
-/* 
+/*
 store the descriptions of import specifiers
 
 like:import * as xxx from xxx
-type:"ImportNamespaceSpecifier" 
+type:"ImportNamespaceSpecifier"
 
 like:import { xxx } from xxx
 "ImportSpecifier"
@@ -22,7 +22,7 @@ export interface ImportSpecifer {
   name: string
   type: string
 }
-/* 
+/*
 store the definition of function
 */
 export interface FunctionDescription {
@@ -40,8 +40,8 @@ export interface Component {
   comment: string
 }
 export interface Data {
-  name: string,
-  value: any
+  name: string
+  value: string
   comment: string
 }
 export interface Prop {

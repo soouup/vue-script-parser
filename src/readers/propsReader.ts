@@ -1,4 +1,4 @@
-import { NodePath, Node } from '@babel/traverse'
+import { Node } from '@babel/traverse'
 import * as t from '@babel/types'
 import generate from '@babel/generator'
 
@@ -6,7 +6,7 @@ import { VueOptionName, Prop } from '../ComponentTypes'
 import getConcatedComments from '../helpers/getConcatedComments'
 import processFunctionProperty from '../helpers/processFunctionProperty'
 
-export default function (nodeOfVueOptions: Map<VueOptionName, Node>) {
+export default function (nodeOfVueOptions: Map<VueOptionName, Node>): Prop[] {
   const node = nodeOfVueOptions.get('props') as t.ObjectProperty | undefined
   if (node) {
     // like: props: [xxx,xxx,xxx]
@@ -39,7 +39,7 @@ export default function (nodeOfVueOptions: Map<VueOptionName, Node>) {
               comment: getConcatedComments(propNode.leadingComments || [])
             }
             propNode.value.properties.forEach(propOptionNode => {
-              if(t.isSpreadElement(propOptionNode)){
+              if (t.isSpreadElement(propOptionNode)) {
                 return
               }
               const propOptionName = propOptionNode.key.name

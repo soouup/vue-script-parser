@@ -24,7 +24,7 @@ import dataReader from './readers/dataReader'
 (function (file: string) {
   const code = fs.readFileSync(file, 'utf-8')
   const ast = scriptToAST(code)
-
+  // eslint-disable-next-line
   debugger
   // 最上的连续的commentblock类型的注释作为项目的注释
   const mainCommentArr: t.Comment[] = ast.comments.reduce((sofar: t.Comment[], comment: t.Comment, index: number, arr: t.Comment[]) => {
@@ -41,7 +41,7 @@ import dataReader from './readers/dataReader'
   let data: Data[] = []
   traverse(ast, {
     // 读取import依赖
-    ImportDeclaration(path: NodePath<t.ImportDeclaration>) {
+    ImportDeclaration (path: NodePath<t.ImportDeclaration>) {
       const source: string = path.node.source.value
       const specifiers: ImportSpecifer[] = path.node.specifiers.map(s => {
         return {
@@ -61,14 +61,14 @@ import dataReader from './readers/dataReader'
       dependencies.push(dep)
     },
     // 读取export
-    ExportDefaultDeclaration(rootPath: NodePath<t.ExportDefaultDeclaration>) {
+    ExportDefaultDeclaration (rootPath: NodePath<t.ExportDefaultDeclaration>) {
       const declaration = rootPath.node.declaration as t.ObjectExpression
       const properties = declaration.properties
 
-      function isVueOptionNameSetAsMethod(opName: string): opName is VueOptionNameSetAsMethod {
+      function isVueOptionNameSetAsMethod (opName: string): opName is VueOptionNameSetAsMethod {
         return ['data'].includes(opName)
       }
-      function isVueOptionNameSetAsProperty(opName: string): opName is VueOptionNameSetAsProperty {
+      function isVueOptionNameSetAsProperty (opName: string): opName is VueOptionNameSetAsProperty {
         return ['name', 'props', 'computed', 'watch', 'methods'].includes(opName)
       }
 
@@ -85,7 +85,6 @@ import dataReader from './readers/dataReader'
       name = nameReader(nodeOfVueOptions)
       props = propsReader(nodeOfVueOptions)
       data = dataReader(nodeOfVueOptions)
-
     }
   })
   const ci: ComponentInfo = {
@@ -93,6 +92,7 @@ import dataReader from './readers/dataReader'
     name,
     dependencies
   }
+  // eslint-disable-next-line
   debugger
   console.log(ci)
 })(path.join(__dirname, '..', 'toRead.vue'))
