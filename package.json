@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "vue program analyser",
   "main": "lib/index.js",
-  "author": "汤睿甲 <tangruijia@shuidihuzhu.com>",
+  "author": "汤睿甲 <tang413732712@qq.com>",
   "license": "MIT",
   "scripts": {
     "start": "tsc && node lib/index",
@@ -48,5 +48,8 @@
     "extends": [
       "standard"
     ]
-  }
+  },
+  "eslintIgnore": [
+    "lib"
+  ]
 }

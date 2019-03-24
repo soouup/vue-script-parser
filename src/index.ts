@@ -64,7 +64,7 @@ import dataReader from './readers/dataReader'
     ExportDefaultDeclaration (rootPath: NodePath<t.ExportDefaultDeclaration>) {
       const declaration = rootPath.node.declaration as t.ObjectExpression
       const properties = declaration.properties
-
+      // TODO
       function isVueOptionNameSetAsMethod (opName: string): opName is VueOptionNameSetAsMethod {
         return ['data'].includes(opName)
       }
@@ -90,7 +90,9 @@ import dataReader from './readers/dataReader'
   const ci: ComponentInfo = {
     comment,
     name,
-    dependencies
+    dependencies,
+    props,
+    data
   }
   // eslint-disable-next-line
   debugger

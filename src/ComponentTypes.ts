@@ -39,17 +39,17 @@ export interface Component {
   name: string
   comment: string
 }
-export interface Data {
-  name: string
-  value: string
-  comment: string
-}
 export interface Prop {
   name: string
   required?: boolean
-  default?: number | string | boolean | symbol | null | undefined | FunctionDescription
+  default?: number | string | boolean | null | undefined | FunctionDescription
   validator?: FunctionDescription
   type?: string
+  comment?: string
+}
+export interface Data {
+  name: string
+  value: string
   comment?: string
 }
 export interface Watch {
