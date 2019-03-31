@@ -10,16 +10,19 @@ export default function processFunctionProperty (funcNode: t.ObjectProperty | t.
     if (!t.isFunctionExpression(funcNode.value) && !t.isArrowFunctionExpression(funcNode.value)) {
       console.warn('not a function expression node')
       return {
+        name: '',
         code: '',
         use: []
       }
     }
     return {
+      name: funcNode.key.name as string,
       code: generate(funcNode.value).code,
       use: []
     }
   } else {
     return {
+      name: funcNode.key.name as string,
       code: generate(funcNode).code,
       use: []
     }

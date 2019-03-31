@@ -26,6 +26,7 @@ export interface ImportSpecifer {
 store the definition of function
 */
 export interface FunctionDescription {
+  name: string
   code: string
   use: string[]
 }
@@ -56,14 +57,11 @@ export interface Watch {
   name: string
   use: VueOption[]
 }
-export interface Computed {
-  name: string
-  use: VueOption[]
-}
-export interface Method {
-  name: string
+export interface Computed extends FunctionDescription {
   comment: string
-  use: VueOption[]
+}
+export interface Method extends FunctionDescription {
+  comment: string
 }
 export interface LifeCycle {
   name: LifeCycleName
