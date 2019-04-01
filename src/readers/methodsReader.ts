@@ -7,8 +7,8 @@ import processFunctionProperty from '../helpers/processFunctionProperty'
 
 export default function (nodeOfVueOptions: Map<VueOptionName, Node>): Method[] {
   const node = nodeOfVueOptions.get('methods') as t.ObjectProperty | undefined
-  if (node && t.isObjectExpression(node)) {
-    const properties = node.properties
+  if (node && t.isObjectExpression(node.value)) {
+    const properties = node.value.properties
     return properties.map(p => {
       return t.isSpreadElement(p) ? null : {
         comment: getConcatedComments(p.leadingComments || []),

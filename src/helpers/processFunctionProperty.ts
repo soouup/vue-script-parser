@@ -28,3 +28,12 @@ export default function processFunctionProperty (funcNode: t.ObjectProperty | t.
     }
   }
 }
+
+export function isFunctionProperty (node: t.ObjectProperty | t.ObjectMethod): boolean {
+  if (t.isObjectProperty(node)) {
+    if (!t.isFunctionExpression(node.value) || !t.isArrowFunctionExpression(node.value)) {
+      return false
+    }
+  }
+  return true
+}

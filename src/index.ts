@@ -1,31 +1,35 @@
-import * as fs from 'fs'
-import * as path from 'path'
-
 import traverse, { NodePath, Node } from '@babel/traverse'
 import * as t from '@babel/types'
 
 import scriptToAST from './scriptToAST'
 import getConcatedComments from './helpers/getConcatedComments'
+import { isFunctionProperty } from './helpers/processFunctionProperty'
 import ComponentInfo, {
   VueOptionNameSetAsMethod,
   VueOptionNameSetAsProperty,
   VueOptionName,
   ImportSpecifer,
+  lifeCycleName,
 
   Dependence,
   Prop,
-  Data
+  Data,
+  Method,
+  Computed,
+  Watch,
+  LifeCycle
 } from './ComponentTypes'
 
 import nameReader from './readers/nameReader'
 import propsReader from './readers/propsReader'
 import dataReader from './readers/dataReader'
+import methodsReader from './readers/methodsReader'
+import computedReader from './readers/computedReader'
+import watchReader from './readers/watchReader'
+import lifeCyclesReader from './readers/lifeCyclesReader'
 
-(function (file: string) {
-  const code = fs.readFileSync(file, 'utf-8')
+export default function (code: string): ComponentInfo {
   const ast = scriptToAST(code)
-  // eslint-disable-next-line
-  debugger
   // 最上的连续的commentblock类型的注释作为项目的注释
   const mainCommentArr: t.Comment[] = ast.comments.reduce((sofar: t.Comment[], comment: t.Comment, index: number, arr: t.Comment[]) => {
     if (comment.type === 'CommentBlock' && arr.indexOf(sofar[sofar.length - 1]) + 1 === index) {
@@ -39,6 +43,10 @@ import dataReader from './readers/dataReader'
   let name
   let props: Prop[] = []
   let data: Data[] = []
+  let methods: Method[] = []
+  let computed: Computed[] = []
+  let watch: Watch[] = []
+  let lifeCycles: LifeCycle[] = []
   traverse(ast, {
     // 读取import依赖
     ImportDeclaration (path: NodePath<t.ImportDeclaration>) {
@@ -64,9 +72,9 @@ import dataReader from './readers/dataReader'
     ExportDefaultDeclaration (rootPath: NodePath<t.ExportDefaultDeclaration>) {
       const declaration = rootPath.node.declaration as t.ObjectExpression
       const properties = declaration.properties
-      // TODO
+
       function isVueOptionNameSetAsMethod (opName: string): opName is VueOptionNameSetAsMethod {
-        return ['data'].includes(opName)
+        return ['data', ...lifeCycleName].includes(opName)
       }
       function isVueOptionNameSetAsProperty (opName: string): opName is VueOptionNameSetAsProperty {
         return ['name', 'props', 'computed', 'watch', 'methods'].includes(opName)
@@ -75,9 +83,9 @@ import dataReader from './readers/dataReader'
       const nodeOfVueOptions = new Map<VueOptionName, Node>()
 
       properties.forEach(pNode => {
-        if (t.isObjectProperty(pNode) && isVueOptionNameSetAsProperty(pNode.key.name)) {
+        if ((t.isObjectProperty(pNode) || t.isObjectMethod(pNode)) && isFunctionProperty(pNode) && isVueOptionNameSetAsMethod(pNode.key.name)) {
           nodeOfVueOptions.set(pNode.key.name, pNode)
-        } else if (t.isObjectMethod(pNode) && isVueOptionNameSetAsMethod(pNode.key.name)) {
+        } else if (t.isObjectProperty(pNode) && isVueOptionNameSetAsProperty(pNode.key.name)) {
           nodeOfVueOptions.set(pNode.key.name, pNode)
         }
       })
@@ -85,6 +93,10 @@ import dataReader from './readers/dataReader'
       name = nameReader(nodeOfVueOptions)
       props = propsReader(nodeOfVueOptions)
       data = dataReader(nodeOfVueOptions)
+      methods = methodsReader(nodeOfVueOptions)
+      computed = computedReader(nodeOfVueOptions)
+      watch = watchReader(nodeOfVueOptions)
+      lifeCycles = lifeCyclesReader(nodeOfVueOptions)
     }
   })
   const ci: ComponentInfo = {
@@ -92,9 +104,12 @@ import dataReader from './readers/dataReader'
     name,
     dependencies,
     props,
-    data
+    data,
+    computed,
+    methods,
+    watch,
+    lifeCycles
   }
-  // eslint-disable-next-line
-  debugger
-  console.log(ci)
-})(path.join(__dirname, '..', 'toRead.vue'))
+
+  return ci
+}

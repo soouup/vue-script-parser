@@ -1,7 +1,6 @@
-export type VueOption = Dependence | Component | Data | Prop | Method | Watch | Computed
-
 export type LifeCycleName = 'beforeCreate' | 'created' | 'beforeMount' | 'mounted' | 'beforeUpdate'
 | 'updated' | 'beforeDetroy' | 'activated' | 'deactivated'
+export const lifeCycleName: LifeCycleName[] = ['beforeCreate', 'created', 'beforeMount', 'mounted', 'beforeUpdate', 'updated', 'beforeDetroy', 'activated', 'deactivated']
 export type VueOptionNameSetAsMethod = 'data' | LifeCycleName
 export type VueOptionNameSetAsProperty = 'name' | 'props' | 'computed' | 'watch' | 'methods'
 export type VueOptionName = VueOptionNameSetAsMethod | VueOptionNameSetAsProperty
@@ -55,17 +54,24 @@ export interface Data {
 }
 export interface Watch {
   name: string
-  use: VueOption[]
-}
-export interface Computed extends FunctionDescription {
   comment: string
+  handler: FunctionDescription
+  deep?: boolean,
+  immediate?: boolean
+}
+export interface Computed {
+  name: string
+  comment: string
+  getter?: FunctionDescription
+  setter?: FunctionDescription
+  func?: FunctionDescription
 }
 export interface Method extends FunctionDescription {
   comment: string
 }
-export interface LifeCycle {
+export interface LifeCycle extends FunctionDescription {
   name: LifeCycleName
-  use: VueOption[]
+  comment: string
 }
 
 export default interface ComponentInfo {
@@ -76,7 +82,7 @@ export default interface ComponentInfo {
   data?: Data[]
   props?: Prop[]
   methods?: Method[]
-  watches?: Watch[]
-  computeds?: Computed[]
+  watch?: Watch[]
+  computed?: Computed[]
   lifeCycles?: LifeCycle[]
 }

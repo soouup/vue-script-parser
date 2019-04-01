@@ -51,16 +51,16 @@ export default {
     },
     // 带有默认值的数字
     propD: {
-      type: [Number,String],
+      type: [Number, String],
       required: true,
       default: 100,
-      default:null,
-      default:undefined,
-      default:Symbal(),
-      default(){return 1},
-      default: ()=>{},
-      default: function(){return {}},
-      validator(value) {
+      default: null,
+      default: undefined,
+      default: Symbal(),
+      default () { return 1 },
+      default: () => { },
+      default: function () { return {} },
+      validator (value) {
         // 这个值必须匹配下列字符串中的一个
         return ['success', 'warning', 'danger'].indexOf(value) !== -1
       }
@@ -79,7 +79,13 @@ export default {
       }
     }
   },
-  data() {
+  activated: function(){
+    console.log('activated')
+  },
+  mounted(){
+    console.log('mounted')
+  },
+  data () {
     return {
       BASE_URL: BASE_URL,
       imgDefaultList: [],
@@ -87,7 +93,23 @@ export default {
       token: window.localStorage['shAdmin'] ? JSON.parse(window.localStorage['shAdmin']).token : '',
     }
   },
+  computed: {
+    someCom () {
+      return this.BASE_URL.trim()
+    },
+    someCom2: {
+      get () {
+        return '1'
+      },
+      set () {
+        return '2'
+      }
+    }
+  },
   watch: {
+    BASE_URL (val) {
+      console.log(val)
+    },
     value: {
       handler: function (val) {
         this.imgDefaultList = (val || '').split(',').filter(url => !!url).map(url => ({ name: val, url }))
@@ -96,7 +118,7 @@ export default {
     }
   },
   methods: {
-    beforeImgUpload(file) {
+    beforeImgUpload (file) {
       console.log(file)
       // 检查文件类型
       if (this.validType) {
@@ -112,7 +134,7 @@ export default {
       }
     },
     // 返回是否符合格式约束
-    isValidTypeAfterCheck(file) {
+    isValidTypeAfterCheck (file) {
       const isValidType = this.validType.includes(file.type)
       if (!isValidType) {
         // 取/后的字符
@@ -124,7 +146,7 @@ export default {
       }
     },
     // 是否符合最大文件大小的约束
-    isValidMaxSizeAfterCheck(file) {
+    isValidMaxSizeAfterCheck (file) {
       const isValidSize = file.size / 1024 / 1024 < this.maxSize
       if (!isValidSize) {
         this.$message.error(`上传图片大小不能超过 ${this.maxSize}MB!`)
@@ -134,7 +156,7 @@ export default {
       }
     },
     // 是否符合宽高的约束，返回promise
-    isValidRulesOfWHAfterCheck(file) {
+    isValidRulesOfWHAfterCheck (file) {
       const self = this
       return new Promise(function (resolve, reject) {
         const reader = new FileReader()
@@ -180,7 +202,7 @@ export default {
         reader.readAsDataURL(file)
       })
     },
-    handleUploadSuccess(res) {
+    handleUploadSuccess (res) {
       console.log(res)
       if (res.code) {
         this.$notify({
@@ -203,7 +225,7 @@ export default {
         type: 'success'
       })
     },
-    handlefileRemove(file) {
+    handlefileRemove (file) {
       const nextValue = (this.value || '')
         .split(',')
         .filter(url => !!url)
@@ -211,7 +233,7 @@ export default {
         .join()
       this.$emit('input', nextValue)
     },
-    hanldeExceed() {
+    hanldeExceed () {
       this.$message.error('已到达上传个数上限')
     },
   }

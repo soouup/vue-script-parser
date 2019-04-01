@@ -1,7 +1,7 @@
 {
-  "name": "vieuer",
+  "name": "vue-analyzer",
   "version": "0.0.1",
-  "description": "vue program analyser",
+  "description": "vue program analyzer",
   "main": "lib/index.js",
   "author": "汤睿甲 <tang413732712@qq.com>",
   "license": "MIT",
