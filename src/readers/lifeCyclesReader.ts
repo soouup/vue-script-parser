@@ -15,15 +15,13 @@ export default function (nodeOfVueOptions: Map<VueOptionName, Node>): LifeCycle[
       return sofar
     }, [])
     .map(lcNode => {
-      if (t.isSpreadElement(lcNode)) {
-        return null
-      }
       if (isFunctionProperty(lcNode)) {
         return {
           comment: getConcatedComments(lcNode.leadingComments || []),
           ...processFunctionProperty(lcNode)
         }
       }
+      return null
     })
     .filter((v: LifeCycle | null): v is LifeCycle => !!v)
 }

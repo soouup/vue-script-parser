@@ -83,7 +83,7 @@ export default function (code: string): ComponentInfo {
       const nodeOfVueOptions = new Map<VueOptionName, Node>()
 
       properties.forEach(pNode => {
-        if ((t.isObjectProperty(pNode) || t.isObjectMethod(pNode)) && isFunctionProperty(pNode) && isVueOptionNameSetAsMethod(pNode.key.name)) {
+        if (isFunctionProperty(pNode) && isVueOptionNameSetAsMethod(pNode.key.name)) {
           nodeOfVueOptions.set(pNode.key.name, pNode)
         } else if (t.isObjectProperty(pNode) && isVueOptionNameSetAsProperty(pNode.key.name)) {
           nodeOfVueOptions.set(pNode.key.name, pNode)

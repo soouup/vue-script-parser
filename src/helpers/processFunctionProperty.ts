@@ -4,36 +4,44 @@ import { FunctionDescription } from '../ComponentTypes'
 /**
 处理ObjectProperty和ObjectMethod注册的函数
 */
-// TODO use
-export default function processFunctionProperty (funcNode: t.ObjectProperty | t.ObjectMethod): FunctionDescription {
-  if (t.isObjectProperty(funcNode)) {
-    if (!t.isFunctionExpression(funcNode.value) && !t.isArrowFunctionExpression(funcNode.value)) {
-      console.warn('not a function expression node')
+
+interface FunctionObjectProperty extends t.ObjectProperty {
+  value: t.FunctionExpression | t.ArrowFunctionExpression
+}
+type FunctionProperty = FunctionObjectProperty | t.ObjectMethod
+
+export default function processFunctionProperty (node: t.Node): FunctionDescription {
+  if (t.isObjectProperty(node)) {
+    if (t.isFunctionExpression(node.value) || t.isArrowFunctionExpression(node.value)) {
       return {
-        name: '',
-        code: '',
+        name: node.key.name as string,
+        code: generate(node.value).code,
         use: []
       }
     }
+  } else if (t.isObjectMethod(node)) {
     return {
-      name: funcNode.key.name as string,
-      code: generate(funcNode.value).code,
+      name: node.key.name as string,
+      code: generate(node).code,
       use: []
     }
-  } else {
-    return {
-      name: funcNode.key.name as string,
-      code: generate(funcNode).code,
-      use: []
-    }
+  }
+  // 不是function属性
+  console.warn('node is not a function')
+  return {
+    name: '',
+    code: '',
+    use: []
   }
 }
 
-export function isFunctionProperty (node: t.ObjectProperty | t.ObjectMethod): boolean {
+export function isFunctionProperty (node: t.Node): node is FunctionProperty {
   if (t.isObjectProperty(node)) {
-    if (!t.isFunctionExpression(node.value) || !t.isArrowFunctionExpression(node.value)) {
-      return false
+    if (t.isFunctionExpression(node.value) || t.isArrowFunctionExpression(node.value)) {
+      return true
     }
+  } else if (t.isObjectMethod(node)) {
+    return true
   }
-  return true
+  return false
 }
