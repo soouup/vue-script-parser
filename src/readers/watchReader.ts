@@ -14,11 +14,13 @@ export default function (nodeOfVueOptions: Map<VueOptionName, Node>): Watch[] {
         return null
         // like: aaaa(){return '1'}
       } else if (isFunctionProperty(p)) {
-        return {
+        const resWatch: Watch = {
           name: p.key.name as string,
           comment: getConcatedComments(p.leadingComments || []),
-          hanlder: processFunctionProperty(p)
+          handler: processFunctionProperty(p)
+
         }
+        return resWatch
         // like aaaa:{get(){return 1},set(){xxx}}
       } else if (t.isObjectProperty(p)) {
         const value = p.value
@@ -33,18 +35,18 @@ export default function (nodeOfVueOptions: Map<VueOptionName, Node>): Watch[] {
           const handler = processFunctionProperty(handlerNode)
           const immediate = immediateNode ? (immediateNode.value as t.BooleanLiteral).value : undefined
           const deep = deepNode ? (deepNode.value as t.BooleanLiteral).value : undefined
-          const origin: Watch = {
+          const resWatch: Watch = {
             name: p.key.name as string,
             comment: getConcatedComments(p.leadingComments || []),
             handler
           }
           if (deep !== undefined) {
-            origin.deep = deep
+            resWatch.deep = deep
           }
           if (immediate !== undefined) {
-            origin.immediate = immediate
+            resWatch.immediate = immediate
           }
-          return origin
+          return resWatch
         }
       }
       return null

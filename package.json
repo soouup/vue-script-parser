@@ -1,10 +1,14 @@
 {
-  "name": "vue-analyzer",
+  "name": "vue-script-parser",
   "version": "0.0.1",
-  "description": "vue program analyzer",
+  "description": "vue sfc parser",
   "main": "lib/index.js",
   "author": "汤睿甲 <tang413732712@qq.com>",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/soouup/vue-script-parser"
+  },
   "scripts": {
     "start": "tsc && node lib/index",
     "build": "tsc",
